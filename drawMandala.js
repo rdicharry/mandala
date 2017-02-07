@@ -2,6 +2,12 @@
  * Created by rebecca on 2/7/17.
  */
 
+/**
+ * todo:
+ * - make user configurable: user can enter desired characters, number of repeats, placement
+ *   |-> need to size the character image better to the input string so the rotation looks better and doesn't get truncated for longer strings
+ */
+
 $('document').ready(function() {
     let canvas = document.getElementById('mandala-canvas');
     let context = canvas.getContext('2d');
