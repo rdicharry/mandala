@@ -27,45 +27,84 @@ $('document').ready(function() {
     context.textBaseLine = 'top';
 
 
-
     // put a lambda into an image so it can be manipulated
     let lambda = '\u03bb';
-    //context.strokeText(lambda, 100, 100);
-    let lambdaCanvas = document.createElement('canvas');
 
-    lambdaCanvas.width = 50;
-    lambdaCanvas.height = 50;
+    let lambdaImage = makeAngledImage(lambda);
+    //context.drawImage(lambdaImage, 100, 100);
+    rotateImage(lambdaImage, 16, width/4.9, context, width, height);
+
+    let code = "<\\>";
+    let codeImage = makeAngledImage(code);
+    //context.drawImage(codeImage, 100, 100);
+
+    rotateImage(codeImage, 13, width/6, context, width, height);
+
+    let brackets = "\{\}";
+    let bracketImage = makeAngledImage(brackets);
+    //context.drawImage(bracketImage, 100, 100);
+
+    rotateImage(bracketImage, 8, width/8, context, width, height);
 
 
-    let lambdaContext = lambdaCanvas.getContext('2d');
-    lambdaContext.font = 'bold 35px Times';
-    lambdaContext.textBaseLine = 'top';
-    lambdaContext.translate(50/2, 50/2);
-    lambdaContext.rotate(-Math.PI/4);
-    lambdaContext.strokeText(lambda, 0, 0);
-    let lambdaImage = new Image();
-    lambdaImage.src = lambdaCanvas.toDataURL();
+    let dot = ".";
+    let dotImage = makeAngledImage(dot);
+    rotateImage(dotImage, 6, width/9, context, width, height);
 
-    context.drawImage(lambdaImage, 100, 100);
+    let plus = "+=";
+    let plusImage = makeAngledImage("+=");
+    rotateImage(plusImage, 18, width/4, context, width, height);
 
-    // set center of rotation to center of canvas
+    let intImage = makeAngledImage("\u222b");
+    rotateImage(intImage, 20, width/3.4, context, width, height);
 
-    let N = 12;
-    let angle = 2*Math.PI/N;
-    let radiusOfRotation = width/8;
+});
 
-    for(j = 0; j < N; j++){
+/**
+ * Draw an image, rotated n times around the center of the drawing context
+ * @param image an image to rotate around the center. Note that the image itself should contain a rotation of -PI/4 radians in order to be "upright" when rotated around the ceneter for proper display
+ * @param n the number of repeats of the image around the center
+ * @param radius the radius from the center at which the image should be placed
+ * @param context the drawin context
+ * @param w the width of the image (canvas) in pixels
+ * @param h the height of the image (canvas) in pixels
+ */
+function rotateImage(image, n, radius, context, w, h){
 
+    let angle = 2*Math.PI/n;
+// set center of rotation to center of canvas
+    let j = 0;
+    for(j = 0; j < n; j++){
         context.save();
-
-        context.translate(width/2, height/2);
-        context.rotate(angle*(j));
-
-        context.drawImage(lambdaImage, -radiusOfRotation, -radiusOfRotation);
-
+        context.translate(w/2, h/2);
+        context.rotate(angle*j);
+        context.drawImage(image, -radius, -radius);
         context.restore();
     }
 
+}
 
+/**
+ * turn a string into an image object, also rotating it by -PI/4 radians around its center
+ * @param string
+ * @returns {*} an object representing the rotated image
+ */
+function makeAngledImage(string){
+    let newCanvas = document.createElement('canvas');
+    let size = 70;
+    newCanvas.width = size;
+    newCanvas.height = size;
 
-});
+    let context = newCanvas.getContext('2d');
+    context.font = 'bold 28px Times';
+    context.textBaseLine = 'middle';
+    context.testAlign = 'center';
+    context.translate(size/2, size/2);
+    context.rotate(-Math.PI/4);
+    context.strokeText(string, 0, 0);
+
+    let image = new Image();
+    image.src = newCanvas.toDataURL();
+
+    return image;
+}
